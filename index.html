@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI 셰프의 주방</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    <style>
+        :root {
+            --background: #F2F4F6;
+            --white: #FFFFFF;
+            --text-main: #191F28;
+            --text-sub: #4E5968;
+            --text-hint: #8B95A1;
+
+            --primary-color: #FF6B6B;
+            --secondary-color: #FFB800;
+            --creative-color: #9B59B6;
+            --strict-color: #00B894;
+
+            --shadow-card: 0 2px 16px rgba(0, 0, 0, 0.06);
+            --radius-l: 24px;
+            --radius-m: 16px;
+            --radius-s: 12px;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            background-color: var(--background);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 520px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            padding-bottom: 100px;
+        }
+
+        .watermark {
+            position: fixed; top: 20px; right: 20px; font-size: 0.75rem; font-weight: 700;
+            color: rgba(0, 0, 0, 0.15); text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
+            pointer-events: none; z-index: 9999; text-align: right; line-height: 1.4;
+        }
+
+        header { text-align: center; margin-top: 10px; margin-bottom: 10px; }
+        .title-wrapper { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .chef-icon { font-size: 2.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
+        h1 { 
+            font-size: 2.2rem; margin: 0; letter-spacing: -1px; 
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-weight: 900;
+        }
+        p.subtitle { color: var(--text-sub); margin: 0; font-size: 1rem; font-weight: 500; opacity: 0.8; }
+
+        /* 입력창 */
+        .input-container {
+            background: var(--white); border-radius: var(--radius-l); padding: 8px;
+            box-shadow: var(--shadow-card); display: flex; align-items: center;
+            transition: transform 0.2s ease; z-index: 10; position: relative; gap: 8px;
+        }
+        .input-container:focus-within { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+
+        input[type="text"] {
+            flex: 1; border: none; padding: 16px; font-size: 1.1rem; 
+            outline: none; background: transparent; color: var(--text-main);
+            font-weight: 500; font-family: inherit; min-width: 0;
+        }
+        input::placeholder { color: var(--text-hint); }
+
+        .clear-btn {
+            width: 28px; height: 28px; border-radius: 50%; border: none;
+            background-color: #E5E8EB; color: #8B95A1; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.9rem; flex-shrink: 0; transition: 0.2s;
+        }
+        .clear-btn:hover { background-color: #d1d6db; color: #4E5968; }
+        .clear-btn:active { transform: scale(0.9); }
+
+        button#cookBtn {
+            background: var(--primary-color); color: white; border: none; padding: 14px 20px;
+            border-radius: var(--radius-m); font-weight: 700; font-size: 1rem; cursor: pointer;
+            transition: all 0.2s; white-space: nowrap; box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+            flex-shrink: 0;
+        }
+        button#cookBtn:active { transform: scale(0.95); }
+        button#cookBtn:disabled { background: #d1d5db; box-shadow: none; cursor: not-allowed; }
+
+        /* 추천 재료 박스 */
+        .recommend-box {
+            background: var(--white); padding: 24px; border-radius: var(--radius-l);
+            box-shadow: var(--shadow-card); display: flex; flex-direction: column; gap: 16px;
+        }
+        .recommend-title {
+            font-size: 1rem; font-weight: 700; color: var(--text-main); margin: 0;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .recommend-title::before {
+            content: ''; display: block; width: 4px; height: 16px;
+            background-color: var(--secondary-color); border-radius: 4px;
+        }
+
+        .chips-row {
+            display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 8px 2px;
+            scrollbar-width: none; -webkit-overflow-scrolling: touch; flex-wrap: wrap;
+        }
+        .chips-row::-webkit-scrollbar { display: none; }
+
+        /* 칩 스타일 */
+        .chip {
+            background: #fff; border: 1px solid #e5e8eb;
+            padding: 8px 14px; border-radius: 20px;
+            font-size: 0.9rem; color: var(--text-main); cursor: pointer;
+            white-space: nowrap; font-weight: 600; transition: all 0.15s ease;
+            box-shadow: 0 3px 0 #e5e8eb, 0 4px 4px rgba(0,0,0,0.05);
+            transform: translateY(0); display: flex; align-items: center; gap: 6px;
+            flex-shrink: 0;
+        }
+        .chip:active { transform: translateY(2px); box-shadow: 0 1px 0 #e5e8eb; }
+        .chip.pressed {
+            background: #f5f7fa; color: var(--primary-color); border-color: transparent;
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.08), inset -2px -2px 5px rgba(255,255,255,0.8);
+            transform: translateY(3px);
+        }
+
+        /* 카테고리 칩 */
+        .category-chip { background: #f2f4f6; color: var(--text-sub); border-color: transparent; box-shadow: none; }
+        .category-chip.active {
+            background: var(--text-main); color: white; border-color: var(--text-main);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .arrow-icon { font-size: 0.7rem; transition: transform 0.3s; }
+        .category-chip.active .arrow-icon { transform: rotate(180deg); }
+
+        /* 메인 카테고리 컨테이너 (아코디언) */
+        .main-category-container {
+            background: #f8f9fa; border-radius: 20px; 
+            border: 1px solid #e5e8eb;
+            overflow: hidden; max-height: 0; opacity: 0;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+        }
+        .main-category-container.open {
+            max-height: 1500px; opacity: 1; padding: 20px; margin-bottom: 12px;
+        }
+
+        /* 중분류 그룹 버튼 */
+        .sub-group-btn {
+            width: 100%; text-align: left; padding: 12px 16px;
+            background: white; border: 1px solid #e5e8eb; border-radius: 16px;
+            font-size: 0.95rem; font-weight: 700; color: var(--text-main);
+            cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 8px; transition: 0.2s;
+        }
+        .sub-group-btn:hover { background: #f1f3f5; }
+        .sub-group-btn .sub-arrow { font-size: 0.8rem; transition: transform 0.3s; color: var(--text-hint); }
+        .sub-group-btn.active { background: #fff8e1; border-color: var(--secondary-color); color: #d35400; }
+        .sub-group-btn.active .sub-arrow { transform: rotate(180deg); color: #d35400; }
+
+        /* 상세 칩 영역 */
+        .sub-chips-area {
+            display: flex; flex-wrap: wrap; gap: 8px; 
+            max-height: 0; overflow: hidden; opacity: 0;
+            transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease;
+        }
+        .sub-chips-area.open {
+            max-height: 500px; opacity: 1; margin-bottom: 16px; padding: 4px 0;
+        }
+
+        /* 상세 칩 디자인 */
+        .sub-chip {
+            padding: 8px 14px; background: #fff; border-radius: 18px;
+            font-size: 0.9rem; color: var(--text-sub); cursor: pointer;
+            border: 1px solid #e5e8eb; transition: all 0.15s ease;
+            box-shadow: 0 2px 0 #e5e8eb; font-weight: 500;
+        }
+        .sub-chip:active { transform: translateY(2px); box-shadow: none; }
+        .sub-chip.pressed {
+            background: #e0f2f1; color: #009688; border-color: transparent;
+            box-shadow: inset 1px 1px 3px rgba(0,0,0,0.1); transform: translateY(2px);
+        }
+
+        /* Settings Box */
+        .settings-box { background: var(--white); padding: 24px; border-radius: var(--radius-l); box-shadow: var(--shadow-card); display: flex; flex-direction: column; gap: 24px; }
+        .setting-row { display: flex; flex-direction: column; gap: 12px; }
+
+        .toggle-wrapper { display: flex; align-items: center; justify-content: space-between; background: #f9fafb; padding: 6px; border-radius: 30px; position: relative; }
+        .toggle-option { flex: 1; text-align: center; padding: 10px 0; z-index: 2; cursor: pointer; font-size: 0.95rem; font-weight: 600; color: var(--text-hint); transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .toggle-bg { position: absolute; top: 4px; bottom: 4px; width: calc(50% - 4px); background: white; border-radius: 26px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); z-index: 1; left: 4px; border: 2px solid transparent; }
+
+        .settings-box[data-chef="conservative"] .toggle-bg.chef-bg { left: calc(50%); border-color: var(--primary-color); }
+        .settings-box[data-chef="conservative"] .opt-conservative { color: var(--primary-color); }
+        .settings-box[data-chef="creative"] .toggle-bg.chef-bg { left: 4px; border-color: var(--creative-color); }
+        .settings-box[data-chef="creative"] .opt-creative { color: var(--creative-color); }
+
+        .settings-box[data-season="allowed"] .toggle-bg.season-bg { left: calc(50%); border-color: var(--secondary-color); }
+        .settings-box[data-season="allowed"] .opt-allowed { color: var(--secondary-color); }
+        .settings-box[data-season="strict"] .toggle-bg.season-bg { left: 4px; border-color: var(--strict-color); }
+        .settings-box[data-season="strict"] .opt-strict { color: var(--strict-color); }
+
+        .desc-box { font-size: 0.9rem; color: var(--text-sub); text-align: center; line-height: 1.5; background: #F9FAFB; padding: 12px; border-radius: var(--radius-m); border: 2px solid transparent; transition: 0.3s; }
+        .settings-box[data-chef="conservative"] #chef-desc { border-color: rgba(255, 107, 107, 0.3); background: rgba(255, 107, 107, 0.05); }
+        .settings-box[data-chef="creative"] #chef-desc { border-color: rgba(155, 89, 182, 0.3); background: rgba(155, 89, 182, 0.05); }
+        .settings-box[data-season="allowed"] #season-desc { border-color: rgba(255, 184, 0, 0.3); background: rgba(255, 184, 0, 0.05); }
+        .settings-box[data-season="strict"] #season-desc { border-color: rgba(0, 184, 148, 0.3); background: rgba(0, 184, 148, 0.05); }
+
+        .divider { height: 1px; background: #e5e8eb; width: 100%; }
+
+        #loading { display: none; text-align: center; padding: 40px 0; }
+        .spinner { width: 48px; height: 48px; border: 5px solid #e5e8eb; border-top: 5px solid var(--primary-color); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loading-dots::after { content: ''; animation: dots 1.5s infinite; }
+        @keyframes dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
+
+        /* 결과 카드 */
+        .recipe-card { background: var(--white); border-radius: var(--radius-l); overflow: hidden; margin-bottom: 24px; box-shadow: var(--shadow-card); cursor: pointer; transition: transform 0.2s; border: 2px solid transparent; }
+        .recipe-card:hover { transform: translateY(-4px); border-color: var(--secondary-color); }
+        .recipe-card.active { border-color: var(--primary-color); ring: 4px solid rgba(255,107,107,0.1); }
+
+        .image-container { position: relative; width: 100%; height: 240px; background: #eee; overflow: hidden; }
+        .dish-image { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.5s; }
+        .img-source-btn { position: absolute; bottom: 12px; right: 12px; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); color: white; padding: 6px 12px; border-radius: 16px; font-size: 0.75rem; font-weight: 600; border: none; display: flex; align-items: center; gap: 4px; transition: 0.2s; }
+        .copy-btn-inline { display: inline-flex; align-items: center; gap: 4px; background-color: #f2f4f6; color: var(--text-sub); padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; cursor: pointer; border: 1px solid #e5e8eb; margin-left: auto; transition: 0.2s; }
+
+        .card-content { padding: 24px; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .dish-name { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin: 0; }
+        .dish-style { font-size: 0.85rem; background: #fff8e1; color: #d35400; padding: 4px 8px; border-radius: 6px; font-weight: 600; }
+        .card-info { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+        .level-badge { background: #f2f4f6; padding: 6px 12px; border-radius: 16px; font-size: 0.9rem; font-weight: 600; color: var(--text-sub); display: flex; align-items: center; gap: 6px; }
+        .card-detail { display: none; margin-top: 20px; border-top: 1px solid #f2f4f6; padding-top: 20px; animation: fadeIn 0.3s; }
+        .recipe-card.active .card-detail { display: block; }
+        .reasoning { background: #f9fafb; padding: 16px; border-radius: 16px; color: #555; font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        h4 { margin: 0; color: var(--text-main); font-size: 1.1rem; }
+        ul.steps { padding: 0; list-style: none; margin: 0; }
+        ul.steps li { padding: 12px 0; border-bottom: 1px solid #f2f4f6; display: flex; gap: 10px; line-height: 1.5; color: var(--text-main); }
+        ul.steps li:before { content: "🍳"; flex-shrink: 0; }
+        ul.steps li:last-child { border-bottom: none; }
+
+        .qa-section { margin-top: 24px; background: #f9fafb; padding: 16px; border-radius: 16px; }
+        .qa-input-box { display: flex; gap: 8px; margin-top: 8px; }
+        .qa-input { flex: 1; padding: 10px 14px; border: 1px solid #e5e8eb; border-radius: 12px; outline: none; }
+        .qa-btn { background: var(--secondary-color); color: white; border: none; padding: 0 16px; border-radius: 12px; font-weight: 700; cursor: pointer; }
+        .qa-answer { margin-top: 12px; padding: 12px; background: white; border-radius: 12px; border: 1px solid #e5e8eb; display: none; }
+        .qa-answer.show { display: block; animation: fadeIn 0.3s; }
+
+        .toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 10000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+        .toast { background: rgba(25, 31, 40, 0.9); color: white; padding: 12px 20px; border-radius: 24px; font-weight: 600; box-shadow: 0 8px 24px rgba(0,0,0,0.12); opacity: 0; transform: translateY(20px); transition: all 0.3s; }
+        .toast.show { opacity: 1; transform: translateY(0); }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; display: none; justify-content: center; align-items: center; animation: fadeIn 0.2s; backdrop-filter: blur(4px); }
+        .modal-content { background: white; padding: 24px; border-radius: 24px; width: 90%; max-width: 360px; text-align: center; animation: slideUp 0.3s; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+        .modal-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 8px; }
+        .modal-desc { color: var(--text-sub); font-size: 0.95rem; margin-bottom: 24px; line-height: 1.5; }
+        .modal-btn-group { display: flex; gap: 10px; }
+        .modal-btn { flex: 1; padding: 14px; border-radius: 14px; font-weight: 700; cursor: pointer; border: none; font-size: 1rem; }
+        .modal-btn.cancel { background: #f2f4f6; color: var(--text-sub); }
+        .modal-btn.confirm { background: var(--primary-color); color: white; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div class="watermark">AI멀티미디어활용<br>2022706086 한준희 전자공학과</div>
+
+<div class="container">
+    <header>
+        <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 5px;">
+            <span class="chef-icon">👨‍🍳</span>
+            <h1>AI 셰프</h1>
+        </div>
+        <p class="subtitle">냉장고 속 재료로 시작하는 요리</p>
+    </header>
+
+    <!-- 입력 섹션 -->
+    <div>
+        <div class="input-container">
+            <input type="text" id="ingredients" placeholder="재료 입력 (예: 계란, 참치)" onkeypress="if(event.key==='Enter') { getRecipe(); playSound('click'); }">
+            <button class="clear-btn" onclick="clearInput(); playSound('click');" title="입력 초기화">✕</button>
+            <button onclick="getRecipe(); playSound('click');" id="cookBtn">요리하기</button>
+        </div>
+
+        <!-- 추천 재료 박스 -->
+        <div class="recommend-box" style="margin-top: 16px; padding: 20px; border-radius: 24px; background: white; box-shadow: 0 2px 16px rgba(0,0,0,0.06);">
+            <div class="recommend-title">추천 재료</div>
+
+            <!-- 1. 상위 칩 (한줄 유지) -->
+            <div class="chips-row">
+                <div class="chip" onclick="toggleIngredient(this, '밥'); playSound('click');">🍚 밥</div>
+                <div class="chip" onclick="toggleIngredient(this, '계란'); playSound('click');">🥚 계란</div>
+                <div class="chip" onclick="toggleIngredient(this, '김치'); playSound('click');">🌶️ 김치</div>
+                <div class="chip" onclick="toggleIngredient(this, '스팸'); playSound('click');">🥓 스팸</div>
+                <div class="chip" onclick="toggleIngredient(this, '참치'); playSound('click');">🐟 참치</div>
+            </div>
+
+            <!-- 2. 카테고리 칩 -->
+            <div class="chips-row">
+                <div class="chip category-chip" onclick="toggleCategory('meat'); playSound('click');" id="chip-meat">
+                    🥩 육류 <span class="arrow-icon">▼</span>
+                </div>
+                <div class="chip category-chip" onclick="toggleCategory('fish'); playSound('click');" id="chip-fish">
+                    🌊 해산물 <span class="arrow-icon">▼</span>
+                </div>
+                <div class="chip category-chip" onclick="toggleCategory('vege'); playSound('click');" id="chip-vege">
+                    🥬 채소 <span class="arrow-icon">▼</span>
+                </div>
+                <div class="chip category-chip" onclick="toggleCategory('dairy'); playSound('click');" id="chip-dairy">
+                    🧀 유제품 <span class="arrow-icon">▼</span>
+                </div>
+            </div>
+
+            <!-- 3. 하위 메뉴 (2단 아코디언) -->
+            <!-- 육류 -->
+            <div id="sub-meat" class="main-category-container">
+                <!-- 돼지고기 -->
+                <button class="sub-group-btn" onclick="toggleSubGroup('pork'); playSound('click');">
+                    🐷 돼지고기 <span id="arrow-pork" class="sub-arrow">▼</span>
+                </button>
+                <div id="group-pork" class="sub-chips-area">
+                    <div class="sub-chip" onclick="toggleIngredient(this, '삼겹살'); playSound('click');">삼겹살</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '목살'); playSound('click');">목살</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '대패삼겹살'); playSound('click');">대패</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '항정살'); playSound('click');">항정살</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '갈매기살'); playSound('click');">갈매기</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '등갈비'); playSound('click');">등갈비</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '앞다리살'); playSound('click');">앞다리</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '뒷다리살'); playSound('click');">뒷다리</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '돼지 다짐육'); playSound('click');">다짐육</div>
+                </div>
+
+                <!-- 소고기 -->
+                <button class="sub-group-btn" onclick="toggleSubGroup('beef'); playSound('click');">
+                    🐮 소고기 <span id="arrow-beef" class="sub-arrow">▼</span>
+                </button>
+                <div id="group-beef" class="sub-chips-area">
+                    <div class="sub-chip" onclick="toggleIngredient(this, '소고기 등심'); playSound('click');">등심</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '소고기 안심'); playSound('click');">안심</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '채끝살'); playSound('click');">채끝</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '차돌박이'); playSound('click');">차돌박이</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '소고기 양지'); playSound('click');">양지(국거리)</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '불고기용 소고기'); playSound('click');">불고기용</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '소고기 다짐육'); playSound('click');">다짐육</div>
+                </div>
+
+                <!-- 닭고기 -->
+                <button class="sub-group-btn" onclick="toggleSubGroup('chicken'); playSound('click');">
+                    🐔 닭고기 <span id="arrow-chicken" class="sub-arrow">▼</span>
+                </button>
+                <div id="group-chicken" class="sub-chips-area">
+                    <div class="sub-chip" onclick="toggleIngredient(this, '닭가슴살'); playSound('click');">가슴살</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '닭다리'); playSound('click');">다리</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '닭날개'); playSound('click');">날개</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '닭안심'); playSound('click');">안심</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '닭볶음탕용'); playSound('click');">볶음탕용</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '통닭'); playSound('click');">통닭</div>
+                </div>
+            </div>
+
+            <!-- 해산물 -->
+            <div id="sub-fish" class="main-category-container">
+                <!-- 어류 -->
+                <button class="sub-group-btn" onclick="toggleSubGroup('fish-fish'); playSound('click');">
+                    🐟 어류 <span id="arrow-fish-fish" class="sub-arrow">▼</span>
+                </button>
+                <div id="group-fish-fish" class="sub-chips-area">
+                    <div class="sub-chip" onclick="toggleIngredient(this, '고등어'); playSound('click');">고등어</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '갈치'); playSound('click');">갈치</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '조기'); playSound('click');">조기</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '삼치'); playSound('click');">삼치</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '연어'); playSound('click');">연어</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '동태'); playSound('click');">동태</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '코다리'); playSound('click');">코다리</div>
+                </div>
+
+                <!-- 해산물/조개 -->
+                <button class="sub-group-btn" onclick="toggleSubGroup('fish-shell'); playSound('click');">
+                    🐚 조개/갑각류 <span id="arrow-fish-shell" class="sub-arrow">▼</span>
+                </button>
+                <div id="group-fish-shell" class="sub-chips-area">
+                    <div class="sub-chip" onclick="toggleIngredient(this, '오징어'); playSound('click');">오징어</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '새우'); playSound('click');">새우</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '바지락'); playSound('click');">바지락</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '굴'); playSound('click');">굴</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '꽃게'); playSound('click');">꽃게</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '전복'); playSound('click');">전복</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '낙지'); playSound('click');">낙지</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '쭈꾸미'); playSound('click');">쭈꾸미</div>
+                </div>
+
+                <!-- 가공/건어물 -->
+                <button class="sub-group-btn" onclick="toggleSubGroup('fish-processed'); playSound('click');">
+                    🍥 가공/건어물/해조 <span id="arrow-fish-processed" class="sub-arrow">▼</span>
+                </button>
+                <div id="group-fish-processed" class="sub-chips-area">
+                    <div class="sub-chip" onclick="toggleIngredient(this, '어묵'); playSound('click');">어묵</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '게맛살'); playSound('click');">게맛살</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '멸치'); playSound('click');">멸치</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '미역'); playSound('click');">미역</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '다시마'); playSound('click');">다시마</div>
+                </div>
+            </div>
+
+            <!-- 채소 (2단 분류) -->
+            <div id="sub-vege" class="main-category-container">
+                <button class="sub-group-btn" onclick="toggleSubGroup('root'); playSound('click');">
+                    🧅 뿌리/줄기 채소 <span id="arrow-root" class="sub-arrow">▼</span>
+                </button>
+                <div id="group-root" class="sub-chips-area">
+                    <div class="sub-chip" onclick="toggleIngredient(this, '양파'); playSound('click');">양파</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '대파'); playSound('click');">대파</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '마늘'); playSound('click');">마늘</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '감자'); playSound('click');">감자</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '당근'); playSound('click');">당근</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '고구마'); playSound('click');">고구마</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '무'); playSound('click');">무</div>
+                </div>
+
+                <button class="sub-group-btn" onclick="toggleSubGroup('leaf'); playSound('click');">
+                    🥬 잎/열매 채소 <span id="arrow-leaf" class="sub-arrow">▼</span>
+                </button>
+                <div id="group-leaf" class="sub-chips-area">
+                    <div class="sub-chip" onclick="toggleIngredient(this, '배추'); playSound('click');">배추</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '상추'); playSound('click');">상추</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '깻잎'); playSound('click');">깻잎</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '시금치'); playSound('click');">시금치</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '청경채'); playSound('click');">청경채</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '숙주'); playSound('click');">숙주</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '콩나물'); playSound('click');">콩나물</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '애호박'); playSound('click');">애호박</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '오이'); playSound('click');">오이</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '고추'); playSound('click');">고추</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '파프리카'); playSound('click');">파프리카</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '버섯'); playSound('click');">버섯</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '브로콜리'); playSound('click');">브로콜리</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '토마토'); playSound('click');">토마토</div>
+                </div>
+
+                <button class="sub-group-btn" onclick="toggleSubGroup('tofu'); playSound('click');">
+                    🥣 두부/가공 <span id="arrow-tofu" class="sub-arrow">▼</span>
+                </button>
+                <div id="group-tofu" class="sub-chips-area">
+                    <div class="sub-chip" onclick="toggleIngredient(this, '두부'); playSound('click');">두부</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '순두부'); playSound('click');">순두부</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '유부'); playSound('click');">유부</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '곤약'); playSound('click');">곤약</div>
+                </div>
+            </div>
+
+            <!-- 유제품 -->
+            <div id="sub-dairy" class="main-category-container">
+                <button class="sub-group-btn" onclick="toggleSubGroup('dairy-all'); playSound('click');">
+                    🥛 유제품 & 치즈 <span id="arrow-dairy-all" class="sub-arrow">▼</span>
+                </button>
+                <div id="group-dairy-all" class="sub-chips-area">
+                    <div class="sub-chip" onclick="toggleIngredient(this, '우유'); playSound('click');">우유</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '치즈'); playSound('click');">치즈</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '체다치즈'); playSound('click');">체다치즈</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '모짜렐라치즈'); playSound('click');">모짜렐라</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '요거트'); playSound('click');">요거트</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '버터'); playSound('click');">버터</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '생크림'); playSound('click');">생크림</div>
+                    <div class="sub-chip" onclick="toggleIngredient(this, '연유'); playSound('click');">연유</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 설정 카드 -->
+    <div class="settings-box" id="settingsBox" data-chef="conservative" data-season="allowed">
+        <div class="setting-row">
+            <div class="toggle-wrapper">
+                <div class="toggle-bg chef-bg"></div>
+                <div class="toggle-option opt-creative" onclick="setChefMode(true)">🎨 창의적 셰프</div>
+                <div class="toggle-option opt-conservative" onclick="setChefMode(false)">👨‍🍳 정석 셰프</div>
+            </div>
+            <!-- 초기 텍스트 동기화 완료 -->
+            <div id="chef-desc" class="desc-box">
+                이 셰프는 <b>실패 없는 맛</b>을 중요시합니다.<br>누구나 좋아하는 검증된 표준 레시피를 추천합니다.
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="setting-row">
+            <div class="toggle-wrapper">
+                <div class="toggle-bg season-bg"></div>
+                <div class="toggle-option opt-strict" onclick="setSeasonMode(false)">🧊 재료만 (엄격)</div>
+                <div class="toggle-option opt-allowed" onclick="setSeasonMode(true)">🧂 조미료 허용</div>
+            </div>
+            <!-- 초기 텍스트 동기화 완료 -->
+            <div id="season-desc" class="desc-box">
+                <b>간장, 굴소스, 마요네즈</b> 등 다양한 양념을 사용합니다.<br>더 풍부하고 맛있는 요리가 가능합니다.
+            </div>
+        </div>
+    </div>
+
+    <div id="loading">
+        <div class="spinner"></div>
+        <p>셰프가 메뉴를 구상하고 있습니다<span class="loading-dots"></span></p>
+    </div>
+
+    <div id="result-area" style="display:none;">
+        <h3 style="text-align:center; color:var(--text-main); margin-bottom: 16px;">🍽️ 추천 메뉴</h3>
+        <div id="cards-container"></div>
+    </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<div id="linkModal" class="modal-overlay" onclick="if(event.target===this) closeLinkModal()">
+    <div class="modal-content">
+        <div class="modal-title">외부 링크 이동</div>
+        <p class="modal-desc">이미지 출처 확인을 위해<br>Bing 검색 결과로 이동하시겠습니까?</p>
+        <div class="modal-btn-group">
+            <button class="modal-btn cancel" onclick="closeLinkModal(); playSound('click');">취소</button>
+            <button class="modal-btn confirm" onclick="confirmLinkMove(); playSound('click');">이동</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const clickSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    clickSound.volume = 0.4;
+    function playSound(type) { if(type==='click') { clickSound.currentTime=0; clickSound.play().catch(()=>{}); } }
+
+    let state = { isCreative: false, isAllowed: true };
+    let selectedIngredients = new Set();
+
+    // 재료 추가 함수
+    function addIngredient(name) {
+        const input = document.getElementById('ingredients');
+        const currentVal = input.value.trim();
+        if (currentVal) input.value = currentVal + ', ' + name;
+        else input.value = name;
+    }
+
+    // [재료 토글 함수] (음각 효과 & 입력창 연동)
+    function toggleIngredient(el, name) {
+        if (selectedIngredients.has(name)) {
+            selectedIngredients.delete(name);
+            el.classList.remove('pressed');
+        } else {
+            selectedIngredients.add(name);
+            el.classList.add('pressed');
+        }
+        updateInput();
+    }
+
+    function updateInput() {
+        const input = document.getElementById('ingredients');
+        if (selectedIngredients.size > 0) {
+            input.value = Array.from(selectedIngredients).join(', ');
+        } else {
+            input.value = '';
+        }
+    }
+
+    function clearInput() {
+        selectedIngredients.clear();
+        document.getElementById('ingredients').value = '';
+        document.querySelectorAll('.chip, .sub-chip').forEach(el => el.classList.remove('pressed'));
+    }
+
+    // [메인 카테고리 토글]
+    function toggleCategory(id) {
+        const subMenu = document.getElementById('sub-' + id);
+        const chip = document.getElementById('chip-' + id);
+        const isVisible = subMenu.classList.contains('open');
+
+        document.querySelectorAll('.main-category-container').forEach(el => el.classList.remove('open'));
+        document.querySelectorAll('.category-chip').forEach(el => el.classList.remove('active'));
+
+        if (!isVisible) {
+            subMenu.classList.add('open');
+            chip.classList.add('active');
+        }
+    }
+
+    // [하위 그룹 토글]
+    function toggleSubGroup(id) {
+        const groupArea = document.getElementById('group-' + id);
+        const arrow = document.getElementById('arrow-' + id);
+        const btn = arrow.parentElement;
+        const isVisible = groupArea.classList.contains('open');
+
+        if (isVisible) {
+            groupArea.classList.remove('open');
+            btn.classList.remove('active');
+        } else {
+            groupArea.classList.add('open');
+            btn.classList.add('active');
+        }
+    }
+
+    function showToast(message) {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = `<span>✅</span> ${message}`;
+        container.appendChild(toast);
+        requestAnimationFrame(() => toast.classList.add('show'));
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 2000);
+    }
+
+    function setChefMode(isCreative) {
+        state.isCreative = isCreative;
+        playSound('click');
+        const box = document.getElementById('settingsBox');
+        const desc = document.getElementById('chef-desc');
+
+        if(isCreative) {
+            box.dataset.chef = "creative";
+            desc.innerHTML = `이 셰프는 <b>세상에 없던 요리</b>를 만듭니다.<br>독창적인 맛의 조합을 제안합니다.`;
+        } else {
+            box.dataset.chef = "conservative";
+            desc.innerHTML = `이 셰프는 <b>실패 없는 맛</b>을 중요시합니다.<br>누구나 좋아하는 검증된 표준 레시피를 추천합니다.`;
+        }
+    }
+
+    function setSeasonMode(isAllowed) {
+        state.isAllowed = isAllowed;
+        playSound('click');
+        const box = document.getElementById('settingsBox');
+        const desc = document.getElementById('season-desc');
+
+        if(isAllowed) {
+            box.dataset.season = "allowed";
+            desc.innerHTML = `<b>간장, 굴소스, 마요네즈, 치킨스톡, 카레가루</b> 등 다양한 양념을 사용합니다.<br>더 풍부하고 맛있는 요리가 가능합니다.`;
+        } else {
+            box.dataset.season = "strict";
+            desc.innerHTML = `오직 <b>입력한 재료</b>와 <b>물, 소금, 후추</b>만 사용합니다.<br>(재료 본연의 맛 모드)`;
+        }
+    }
+
+    async function getRecipe() {
+        const input = document.getElementById('ingredients');
+        const rawInput = input.value.split(',').map(s => s.trim()).filter(s => s);
+        rawInput.forEach(s => selectedIngredients.add(s));
+
+        if(!input.value.trim()) { showToast('재료를 입력해주세요!'); return; }
+
+        const btn = document.getElementById('cookBtn');
+        const loading = document.getElementById('loading');
+        const resultArea = document.getElementById('result-area');
+        const cardsContainer = document.getElementById('cards-container');
+
+        btn.disabled = true; btn.innerText = "요리 중...";
+        loading.style.display = 'block'; resultArea.style.display = 'none';
+        cardsContainer.innerHTML = '';
+
+        try {
+            const response = await fetch('/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    ingredients: input.value,
+                    is_creative_mode: state.isCreative,
+                    allow_seasoning: state.isAllowed
+                })
+            });
+            const data = await response.json();
+
+            if(data.error) { alert(data.error); }
+            else if(data.recommendations) {
+                data.recommendations.forEach((dish, idx) => createCard(dish, idx));
+                resultArea.style.display = 'block';
+                showToast("요리가 완성되었습니다!");
+            }
+        } catch(e) { console.error(e); showToast("오류가 발생했습니다."); }
+        finally { btn.disabled = false; btn.innerText = "요리하기"; loading.style.display = 'none'; }
+    }
+
+    function copyRecipeData(btn) {
+        if (event) event.stopPropagation();
+        playSound('click');
+        const dishName = btn.dataset.name;
+        let steps = [];
+        try { steps = JSON.parse(btn.dataset.steps); } catch(e) { return; }
+        const text = `[AI 셰프의 추천 레시피: ${dishName}]\n\n${steps.map((step, i) => `${i+1}. ${step}`).join('\n')}`;
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => showToast("레시피가 복사되었습니다!")).catch(() => fallbackCopyTextToClipboard(text));
+        } else { fallbackCopyTextToClipboard(text); }
+    }
+
+    function fallbackCopyTextToClipboard(text) {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        document.body.appendChild(textArea);
+        textArea.focus(); textArea.select();
+        try {
+            document.execCommand('copy'); showToast("레시피가 복사되었습니다!");
+        } catch (err) { showToast("복사 실패"); }
+        document.body.removeChild(textArea);
+    }
+
+    let targetLink = "";
+    function openLinkModal(url) { targetLink = url; document.getElementById('linkModal').style.display = 'flex'; playSound('click'); }
+    function closeLinkModal() { document.getElementById('linkModal').style.display = 'none'; targetLink = ""; }
+    function confirmLinkMove() { if(targetLink) window.open(targetLink, '_blank'); closeLinkModal(); }
+
+    function createCard(dish, idx) {
+        const container = document.getElementById('cards-container');
+        const card = document.createElement('div');
+        card.className = 'recipe-card';
+        card.onclick = function(e) {
+            if(['BUTTON','INPUT'].includes(e.target.tagName) || e.target.closest('.img-source-btn') || e.target.closest('.copy-btn-inline')) return;
+            playSound('click');
+            document.querySelectorAll('.recipe-card').forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+        };
+
+        const query = dish.dish_name_en || dish.dish_name;
+        const encodedQuery = encodeURIComponent(query + ' dish food'); 
+        const imgUrl = `https://tse4.mm.bing.net/th?q=${encodedQuery}&w=800&h=600&c=7&rs=1`;
+        const searchUrl = `https://www.bing.com/images/search?q=${encodedQuery}&qft=+filterui:license-L2_L3_L4`;
+
+        const stepsHtml = dish.recipe_steps.map(s => `<li>${s}</li>`).join('');
+        const qInputId = `q-${idx}`; const qAnsId = `a-${idx}`;
+        const stepsJson = JSON.stringify(dish.recipe_steps).replace(/"/g, '&quot;');
+
+        card.innerHTML = `
+            <div class="image-container">
+                <img src="${imgUrl}" class="dish-image" onerror="this.src='https://via.placeholder.com/800x600?text=No+Image';">
+                <button class="img-source-btn" onclick="event.stopPropagation(); openLinkModal('${searchUrl}')">🔍 검색 이미지 출처</button>
+            </div>
+            <div class="card-content">
+                <div class="card-header">
+                    <span class="dish-name">${dish.dish_name}</span>
+                    <span class="dish-style">${dish.style}</span>
+                </div>
+                <div class="card-info">
+                    <span class="level-badge">⚡ ${dish.difficulty}</span>
+                    <span class="level-badge">🔥 ${dish.calories}kcal</span>
+                </div>
+                <div class="card-detail">
+                    <div class="reasoning">${dish.reasoning}</div>
+                    <div class="section-header">
+                        <h4>📝 조리 순서</h4>
+                        <button class="copy-btn-inline" data-name="${dish.dish_name}" data-steps="${stepsJson}" onclick="copyRecipeData(this)">📋 복사</button>
+                    </div>
+                    <ul class="steps">${stepsHtml}</ul>
+                    <div class="qa-section">
+                        <div style="font-weight:700; color:var(--secondary-color); margin-bottom:8px;">👨‍🍳 셰프에게 질문하기</div>
+                        <div class="qa-input-box">
+                            <input type="text" id="${qInputId}" class="qa-input" placeholder="예: 불 조절은 어떻게 하나요?">
+                            <button class="qa-btn" onclick="askChef('${dish.dish_name}', '${qInputId}', '${qAnsId}')">질문</button>
+                        </div>
+                        <div id="${qAnsId}" class="qa-answer"></div>
+                    </div>
+                </div>
+            </div>
+        `;
+        container.appendChild(card);
+    }
+
+    async function askChef(dish, inId, ansId) {
+        const input = document.getElementById(inId);
+        const ansBox = document.getElementById(ansId);
+        if(!input.value.trim()) return;
+        playSound('click');
+        ansBox.style.display = 'block'; ansBox.innerText = "답변 생성 중..."; ansBox.classList.add('show');
+        try {
+            const res = await fetch('/ask', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({dish_name: dish, question: input.value})});
+            const data = await res.json();
+            ansBox.innerText = "🗣️ " + data.answer;
+        } catch(e) { ansBox.innerText = "오류가 발생했습니다."; }
+    }
+</script>
+</body>
+</html>
