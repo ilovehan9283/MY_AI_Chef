@@ -7,55 +7,17 @@
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <style>
         :root {
-            --background: #F2F4F6;
-            --white: #FFFFFF;
-            --text-main: #191F28;
-            --text-sub: #4E5968;
-            --text-hint: #8B95A1;
-
-            --primary-color: #FF6B6B;
-            --secondary-color: #FFB800;
-            --creative-color: #9B59B6;
-            --strict-color: #00B894;
-
-            --shadow-card: 0 2px 16px rgba(0, 0, 0, 0.06);
-            --radius-l: 24px;
-            --radius-m: 16px;
-            --radius-s: 12px;
+            --background: #F2F4F6; --white: #FFFFFF; --text-main: #191F28; --text-sub: #4E5968; --text-hint: #8B95A1;
+            --primary-color: #FF6B6B; --secondary-color: #FFB800; --creative-color: #9B59B6; --strict-color: #00B894;
+            --shadow-card: 0 2px 16px rgba(0, 0, 0, 0.06); --radius-l: 24px; --radius-m: 16px; --radius-s: 12px;
         }
-
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-        body {
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-            background-color: var(--background);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 520px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-            padding-bottom: 100px;
-        }
-
-        .watermark {
-            position: fixed; top: 20px; right: 20px; font-size: 0.75rem; font-weight: 700;
-            color: rgba(0, 0, 0, 0.15); text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
-            pointer-events: none; z-index: 9999; text-align: right; line-height: 1.4;
-        }
+        body { font-family: 'Pretendard', sans-serif; background-color: var(--background); color: var(--text-main); margin: 0; padding: 0; display: flex; justify-content: center; min-height: 100vh; }
+        .container { width: 100%; max-width: 520px; padding: 20px; display: flex; flex-direction: column; gap: 24px; padding-bottom: 100px; }
+        
+        .watermark { position: fixed; top: 20px; right: 20px; font-size: 0.75rem; font-weight: 700; color: rgba(0, 0, 0, 0.15); text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5); pointer-events: none; z-index: 9999; text-align: right; line-height: 1.4; }
 
         header { text-align: center; margin-top: 10px; margin-bottom: 10px; }
-        .title-wrapper { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 8px; }
         .chef-icon { font-size: 2.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
         h1 { 
             font-size: 2.2rem; margin: 0; letter-spacing: -1px; 
@@ -65,14 +27,14 @@
         }
         p.subtitle { color: var(--text-sub); margin: 0; font-size: 1rem; font-weight: 500; opacity: 0.8; }
 
-        /* 입력창 */
         .input-container {
             background: var(--white); border-radius: var(--radius-l); padding: 8px;
             box-shadow: var(--shadow-card); display: flex; align-items: center;
             transition: transform 0.2s ease; z-index: 10; position: relative; gap: 8px;
+            margin-bottom: 0;
         }
         .input-container:focus-within { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-
+        
         input[type="text"] {
             flex: 1; border: none; padding: 16px; font-size: 1.1rem; 
             outline: none; background: transparent; color: var(--text-main);
@@ -134,7 +96,7 @@
             box-shadow: inset 2px 2px 5px rgba(0,0,0,0.08), inset -2px -2px 5px rgba(255,255,255,0.8);
             transform: translateY(3px);
         }
-
+        
         /* 카테고리 칩 */
         .category-chip { background: #f2f4f6; color: var(--text-sub); border-color: transparent; box-shadow: none; }
         .category-chip.active {
@@ -144,7 +106,7 @@
         .arrow-icon { font-size: 0.7rem; transition: transform 0.3s; }
         .category-chip.active .arrow-icon { transform: rotate(180deg); }
 
-        /* 메인 카테고리 컨테이너 (아코디언) */
+        /* 메인 카테고리 컨테이너 */
         .main-category-container {
             background: #f8f9fa; border-radius: 20px; 
             border: 1px solid #e5e8eb;
@@ -180,10 +142,9 @@
 
         /* 상세 칩 디자인 */
         .sub-chip {
-            padding: 8px 14px; background: #fff; border-radius: 18px;
+            padding: 8px 14px; background: #fff; border: 1px solid #e5e8eb; border-radius: 18px;
             font-size: 0.9rem; color: var(--text-sub); cursor: pointer;
-            border: 1px solid #e5e8eb; transition: all 0.15s ease;
-            box-shadow: 0 2px 0 #e5e8eb; font-weight: 500;
+            transition: all 0.15s ease; box-shadow: 0 2px 0 #e5e8eb; font-weight: 500;
         }
         .sub-chip:active { transform: translateY(2px); box-shadow: none; }
         .sub-chip.pressed {
@@ -194,7 +155,7 @@
         /* Settings Box */
         .settings-box { background: var(--white); padding: 24px; border-radius: var(--radius-l); box-shadow: var(--shadow-card); display: flex; flex-direction: column; gap: 24px; }
         .setting-row { display: flex; flex-direction: column; gap: 12px; }
-
+        
         .toggle-wrapper { display: flex; align-items: center; justify-content: space-between; background: #f9fafb; padding: 6px; border-radius: 30px; position: relative; }
         .toggle-option { flex: 1; text-align: center; padding: 10px 0; z-index: 2; cursor: pointer; font-size: 0.95rem; font-weight: 600; color: var(--text-hint); transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .toggle-bg { position: absolute; top: 4px; bottom: 4px; width: calc(50% - 4px); background: white; border-radius: 26px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); z-index: 1; left: 4px; border: 2px solid transparent; }
@@ -232,7 +193,7 @@
         .dish-image { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.5s; }
         .img-source-btn { position: absolute; bottom: 12px; right: 12px; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); color: white; padding: 6px 12px; border-radius: 16px; font-size: 0.75rem; font-weight: 600; border: none; display: flex; align-items: center; gap: 4px; transition: 0.2s; }
         .copy-btn-inline { display: inline-flex; align-items: center; gap: 4px; background-color: #f2f4f6; color: var(--text-sub); padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; cursor: pointer; border: 1px solid #e5e8eb; margin-left: auto; transition: 0.2s; }
-
+        
         .card-content { padding: 24px; }
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .dish-name { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin: 0; }
@@ -260,17 +221,64 @@
         .toast { background: rgba(25, 31, 40, 0.9); color: white; padding: 12px 20px; border-radius: 24px; font-weight: 600; box-shadow: 0 8px 24px rgba(0,0,0,0.12); opacity: 0; transform: translateY(20px); transition: all 0.3s; }
         .toast.show { opacity: 1; transform: translateY(0); }
 
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; display: none; justify-content: center; align-items: center; animation: fadeIn 0.2s; backdrop-filter: blur(4px); }
-        .modal-content { background: white; padding: 24px; border-radius: 24px; width: 90%; max-width: 360px; text-align: center; animation: slideUp 0.3s; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
-        .modal-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 8px; }
-        .modal-desc { color: var(--text-sub); font-size: 0.95rem; margin-bottom: 24px; line-height: 1.5; }
-        .modal-btn-group { display: flex; gap: 10px; }
-        .modal-btn { flex: 1; padding: 14px; border-radius: 14px; font-weight: 700; cursor: pointer; border: none; font-size: 1rem; }
+        /* 모달 스타일 */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); /* 배경을 진하게 어둡게 */
+            z-index: 9999; display: none;
+            justify-content: center; align-items: center; animation: fadeIn 0.2s;
+            backdrop-filter: blur(4px);
+        }
+        .modal-content {
+            background: white; padding: 24px; border-radius: 24px;
+            width: 90%; max-width: 360px; box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            text-align: left; animation: slideUp 0.3s;
+        }
+        .modal-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 4px; color: var(--text-main); }
+        .modal-desc { color: var(--text-sub); font-size: 0.9rem; margin-bottom: 20px; line-height: 1.5; }
+        
+        .api-input-group {
+            display: flex; position: relative; margin-bottom: 15px;
+        }
+        .api-input-group input {
+            flex: 1; padding: 12px 16px; padding-right: 130px; /* 버튼 공간 확보 */
+            border: 1px solid #E5E8EB; border-radius: var(--radius-s); font-size: 0.95rem;
+            font-family: monospace; color: var(--text-main);
+        }
+        .api-controls {
+            position: absolute; right: 5px; top: 50%; transform: translateY(-50%); display: flex; gap: 5px;
+        }
+        .api-btn {
+            background: #f2f4f6; color: var(--text-sub); border: none; padding: 6px 10px; border-radius: var(--radius-s);
+            font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s;
+        }
+        .api-btn:hover { background: #e5e8eb; }
+        
+        .modal-buttons { display: flex; gap: 10px; justify-content: flex-end; margin-top: 15px; }
+        .modal-btn { padding: 10px 18px; border-radius: 12px; font-weight: 700; cursor: pointer; border: none; font-size: 0.95rem; }
         .modal-btn.cancel { background: #f2f4f6; color: var(--text-sub); }
         .modal-btn.confirm { background: var(--primary-color); color: white; }
+        .modal-btn.logout { background: var(--primary-color); color: white; margin-left: 10px; }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        /* 하단 고정 버튼 */
+        .fixed-bottom-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%; display: flex; justify-content: center;
+            padding: 15px 0; background: linear-gradient(to top, rgba(242,244,246,1) 70%, rgba(242,244,246,0));
+            z-index: 999; pointer-events: none;
+        }
+        .info-button-container { pointer-events: all; }
+        .info-button { background: var(--text-main); color: white; padding: 12px 24px; border-radius: 30px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); transition: all 0.2s ease; display: flex; align-items: center; gap: 8px; }
+        .info-button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25); }
+        
+        /* 툴팁 스타일 (호버 시 표시) */
+        .info-tooltip {
+            position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+            margin-bottom: 10px; background: rgba(0,0,0,0.8); color: white;
+            padding: 8px 12px; border-radius: 8px; font-size: 0.8rem;
+            white-space: nowrap; opacity: 0; transition: opacity 0.2s; pointer-events: none;
+        }
+        .info-button-container:hover .info-tooltip { opacity: 1; }
+
     </style>
 </head>
 <body>
@@ -293,12 +301,12 @@
             <button class="clear-btn" onclick="clearInput(); playSound('click');" title="입력 초기화">✕</button>
             <button onclick="getRecipe(); playSound('click');" id="cookBtn">요리하기</button>
         </div>
-
+        
         <!-- 추천 재료 박스 -->
         <div class="recommend-box" style="margin-top: 16px; padding: 20px; border-radius: 24px; background: white; box-shadow: 0 2px 16px rgba(0,0,0,0.06);">
             <div class="recommend-title">추천 재료</div>
-
-            <!-- 1. 상위 칩 (한줄 유지) -->
+            
+            <!-- 1. 상위 칩 -->
             <div class="chips-row">
                 <div class="chip" onclick="toggleIngredient(this, '밥'); playSound('click');">🍚 밥</div>
                 <div class="chip" onclick="toggleIngredient(this, '계란'); playSound('click');">🥚 계란</div>
@@ -306,7 +314,7 @@
                 <div class="chip" onclick="toggleIngredient(this, '스팸'); playSound('click');">🥓 스팸</div>
                 <div class="chip" onclick="toggleIngredient(this, '참치'); playSound('click');">🐟 참치</div>
             </div>
-
+            
             <!-- 2. 카테고리 칩 -->
             <div class="chips-row">
                 <div class="chip category-chip" onclick="toggleCategory('meat'); playSound('click');" id="chip-meat">
@@ -323,7 +331,7 @@
                 </div>
             </div>
 
-            <!-- 3. 하위 메뉴 (2단 아코디언) -->
+            <!-- 3. 하위 메뉴 -->
             <!-- 육류 -->
             <div id="sub-meat" class="main-category-container">
                 <!-- 돼지고기 -->
@@ -459,7 +467,7 @@
                     <div class="sub-chip" onclick="toggleIngredient(this, '곤약'); playSound('click');">곤약</div>
                 </div>
             </div>
-
+            
             <!-- 유제품 -->
             <div id="sub-dairy" class="main-category-container">
                 <button class="sub-group-btn" onclick="toggleSubGroup('dairy-all'); playSound('click');">
@@ -503,7 +511,7 @@
             </div>
             <!-- 초기 텍스트 동기화 완료 -->
             <div id="season-desc" class="desc-box">
-                <b>간장, 굴소스, 마요네즈</b> 등 다양한 양념을 사용합니다.<br>더 풍부하고 맛있는 요리가 가능합니다.
+                <b>간장, 굴소스, 마요네즈, 치킨스톡</b> 등 다양한 양념을 사용합니다.<br>더 풍부하고 맛있는 요리가 가능합니다.
             </div>
         </div>
     </div>
@@ -519,8 +527,69 @@
     </div>
 </div>
 
+<!-- 하단 고정 바 (API Key 관리 버튼) -->
+<div class="fixed-bottom-bar">
+    <div class="info-button-container">
+        <button class="info-button" onclick="openKeyManagementModal(); playSound('click');">
+            🔑 API Key 관리
+        </button>
+        <div class="info-tooltip">
+            키 상태: <span id="key-status">미입력</span>
+        </div>
+    </div>
+</div>
+
+
 <div class="toast-container" id="toastContainer"></div>
 
+<!-- [1] API Key 입력 모달 -->
+<div id="apiKeyModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-title">Gemini API Key 입력</div>
+        <p class="modal-desc">
+            AI 기능을 사용하려면 API Key가 필요합니다.<br>
+            키는 브라우저에 안전하게 저장됩니다.
+        </p>
+        
+        <div class="api-input-group">
+            <input type="password" id="apiKeyModalInput" placeholder="AIzaSy..." value="" oninput="validateAndSaveKey(this.value)">
+            <div class="api-controls">
+                <button class="api-btn" onclick="toggleKeyVisibility(this)">👁️ 보기</button>
+                <button class="api-btn" onclick="pasteKey()">📋 Paste</button>
+            </div>
+        </div>
+
+        <div class="modal-buttons">
+            <!-- confirm 버튼의 disabled 속성 제거 (입력값 있으면 활성화되도록 JS에서 제어하지만 초기엔 비활성) -->
+            <button class="modal-btn confirm" id="apiKeySaveBtn" disabled onclick="saveAndCloseKeyModal()">저장하고 시작</button>
+        </div>
+    </div>
+</div>
+
+<!-- [2] API Key 관리/로그아웃 모달 (NEW) -->
+<div id="keyManagementModal" class="modal-overlay" onclick="if(event.target===this) this.style.display='none'">
+    <div class="modal-content">
+        <div class="modal-title">🔑 현재 API Key 관리</div>
+        <p class="modal-desc">
+            키를 확인하거나, 로컬 저장소에서 키를 제거하여 로그아웃할 수 있습니다.
+        </p>
+        
+        <div class="api-input-group" style="margin-bottom: 20px;">
+            <input type="password" id="keyDisplayInput" readonly value="" style="color:var(--text-main); background:#F9FAFB;">
+            <div class="api-controls">
+                <button class="api-btn" onclick="toggleKeyDisplayVisibility(this)">👁️ 보기</button>
+            </div>
+        </div>
+        
+        <div class="modal-buttons">
+            <button class="modal-btn cancel" onclick="document.getElementById('keyManagementModal').style.display='none'; playSound('click');">닫기</button>
+            <button class="modal-btn logout" onclick="logoutAndDeleteKey(); playSound('click');">로그아웃 (키 제거)</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- 기존 모달들 -->
 <div id="linkModal" class="modal-overlay" onclick="if(event.target===this) closeLinkModal()">
     <div class="modal-content">
         <div class="modal-title">외부 링크 이동</div>
@@ -532,6 +601,15 @@
     </div>
 </div>
 
+<!-- 레벨 정보 모달 -->
+<div id="infoModal" class="modal-overlay" onclick="if(event.target===this) this.style.display='none'">
+    <div class="modal-content">
+        <span class="close-btn" onclick="document.getElementById('infoModal').style.display='none'">&times;</span>
+        <div id="modalTitle" class="modal-title"></div>
+        <ul id="modalList" class="level-list"></ul>
+    </div>
+</div>
+
 <script>
     const clickSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
     clickSound.volume = 0.4;
@@ -539,142 +617,147 @@
 
     let state = { isCreative: false, isAllowed: true };
     let selectedIngredients = new Set();
+    const API_KEY_STORAGE_KEY = 'gemini_api_key';
 
-    // 재료 추가 함수
-    function addIngredient(name) {
-        const input = document.getElementById('ingredients');
-        const currentVal = input.value.trim();
-        if (currentVal) input.value = currentVal + ', ' + name;
-        else input.value = name;
-    }
-
-    // [재료 토글 함수] (음각 효과 & 입력창 연동)
-    function toggleIngredient(el, name) {
-        if (selectedIngredients.has(name)) {
-            selectedIngredients.delete(name);
-            el.classList.remove('pressed');
+    // 페이지 로드 시 API Key 체크
+    window.addEventListener('DOMContentLoaded', () => {
+        const storedKey = localStorage.getItem(API_KEY_STORAGE_KEY);
+        if (storedKey) {
+            // 키가 있으면: 모달 닫고 상태 업데이트
+            document.getElementById('apiKeyModal').style.display = 'none';
+            document.getElementById('apiKeyModalInput').value = storedKey;
+            updateKeyStatus(true);
         } else {
-            selectedIngredients.add(name);
-            el.classList.add('pressed');
+            // 키가 없으면: [핵심] 입력 모달 강제 표시 (닫기 버튼 없음)
+            document.getElementById('apiKeyModal').style.display = 'flex';
+            updateKeyStatus(false);
         }
-        updateInput();
-    }
 
-    function updateInput() {
-        const input = document.getElementById('ingredients');
-        if (selectedIngredients.size > 0) {
-            input.value = Array.from(selectedIngredients).join(', ');
+        // 초기 UI 상태 업데이트
+        updateChefUI();
+        updateSeasoningUI();
+    });
+
+    // API Key 상태 업데이트 (툴팁 텍스트 변경)
+    function updateKeyStatus(hasKey) {
+        const statusSpan = document.getElementById('key-status');
+        if (hasKey) {
+            statusSpan.innerText = '입력됨 (클릭하여 관리)';
+            statusSpan.style.color = '#00B894'; 
         } else {
-            input.value = '';
+            statusSpan.innerText = '미입력 (클릭하여 입력)';
+            statusSpan.style.color = '#ff6b6b'; 
         }
     }
 
-    function clearInput() {
-        selectedIngredients.clear();
-        document.getElementById('ingredients').value = '';
-        document.querySelectorAll('.chip, .sub-chip').forEach(el => el.classList.remove('pressed'));
+    // API Key 관리 모달 열기
+    function openKeyManagementModal() {
+        const modal = document.getElementById('keyManagementModal');
+        const displayInput = document.getElementById('keyDisplayInput');
+        const storedKey = localStorage.getItem(API_KEY_STORAGE_KEY) || '';
+
+        displayInput.value = storedKey;
+        displayInput.type = storedKey ? 'password' : 'text'; 
+        modal.querySelector('.api-controls .api-btn').innerText = '👁️ 보기'; 
+        modal.style.display = 'flex';
     }
-
-    // [메인 카테고리 토글]
-    function toggleCategory(id) {
-        const subMenu = document.getElementById('sub-' + id);
-        const chip = document.getElementById('chip-' + id);
-        const isVisible = subMenu.classList.contains('open');
-
-        document.querySelectorAll('.main-category-container').forEach(el => el.classList.remove('open'));
-        document.querySelectorAll('.category-chip').forEach(el => el.classList.remove('active'));
-
-        if (!isVisible) {
-            subMenu.classList.add('open');
-            chip.classList.add('active');
-        }
-    }
-
-    // [하위 그룹 토글]
-    function toggleSubGroup(id) {
-        const groupArea = document.getElementById('group-' + id);
-        const arrow = document.getElementById('arrow-' + id);
-        const btn = arrow.parentElement;
-        const isVisible = groupArea.classList.contains('open');
-
-        if (isVisible) {
-            groupArea.classList.remove('open');
-            btn.classList.remove('active');
-        } else {
-            groupArea.classList.add('open');
-            btn.classList.add('active');
-        }
-    }
-
-    function showToast(message) {
-        const container = document.getElementById('toastContainer');
-        const toast = document.createElement('div');
-        toast.className = 'toast';
-        toast.innerHTML = `<span>✅</span> ${message}`;
-        container.appendChild(toast);
-        requestAnimationFrame(() => toast.classList.add('show'));
-        setTimeout(() => {
-            toast.classList.remove('show');
-            setTimeout(() => toast.remove(), 300);
-        }, 2000);
-    }
-
-    function setChefMode(isCreative) {
-        state.isCreative = isCreative;
+    
+    function toggleKeyDisplayVisibility(btn) {
+        const input = document.getElementById('keyDisplayInput');
+        if (input.type === 'password') { input.type = 'text'; btn.innerText = '🔒 숨김'; } 
+        else { input.type = 'password'; btn.innerText = '👁️ 보기'; }
         playSound('click');
-        const box = document.getElementById('settingsBox');
-        const desc = document.getElementById('chef-desc');
-
-        if(isCreative) {
-            box.dataset.chef = "creative";
-            desc.innerHTML = `이 셰프는 <b>세상에 없던 요리</b>를 만듭니다.<br>독창적인 맛의 조합을 제안합니다.`;
-        } else {
-            box.dataset.chef = "conservative";
-            desc.innerHTML = `이 셰프는 <b>실패 없는 맛</b>을 중요시합니다.<br>누구나 좋아하는 검증된 표준 레시피를 추천합니다.`;
-        }
     }
 
-    function setSeasonMode(isAllowed) {
-        state.isAllowed = isAllowed;
+    // [핵심] 로그아웃: 키 삭제 후 즉시 새로고침
+    function logoutAndDeleteKey() {
+        localStorage.removeItem(API_KEY_STORAGE_KEY);
+        alert('로그아웃되었습니다. 초기 화면으로 돌아갑니다.');
+        location.reload(); // 새로고침
+    }
+
+    // [핵심] API Key 검증 및 저장 시도 (양식만 맞으면 통과)
+    async function saveAndCloseKeyModal() {
+        const key = document.getElementById('apiKeyModalInput').value.trim();
+        
+        // 1. 형식 검증 (AIza로 시작하고 30자 이상이면 통과)
+        if (!key || key.length < 30 || !key.startsWith('AIza')) {
+            alert('유효하지 않은 API Key 형식입니다.\n(AIza...로 시작하며 30자 이상이어야 합니다)');
+            return;
+        }
+
+        // 2. 형식만 맞으면 바로 저장하고 모달 닫기 (실제 검증은 나중에)
+        localStorage.setItem(API_KEY_STORAGE_KEY, key);
+        document.getElementById('apiKeyModal').style.display = 'none';
+        updateKeyStatus(true);
+        showToast('API Key가 저장되었습니다. AI 기능 사용 시 검증됩니다.');
+
+    }
+
+    function validateAndSaveKey(key) {
+        const saveBtn = document.getElementById('apiKeySaveBtn');
+        const isValid = key.trim().length > 30 && key.startsWith('AIza');
+        saveBtn.disabled = !isValid;
+    }
+    
+    function toggleKeyVisibility(btn) {
+        const input = document.getElementById('apiKeyModalInput');
+        if (input.type === 'password') { input.type = 'text'; btn.innerText = '🔒 숨김'; } 
+        else { input.type = 'password'; btn.innerText = '👁️ 보기'; }
         playSound('click');
-        const box = document.getElementById('settingsBox');
-        const desc = document.getElementById('season-desc');
-
-        if(isAllowed) {
-            box.dataset.season = "allowed";
-            desc.innerHTML = `<b>간장, 굴소스, 마요네즈, 치킨스톡, 카레가루</b> 등 다양한 양념을 사용합니다.<br>더 풍부하고 맛있는 요리가 가능합니다.`;
-        } else {
-            box.dataset.season = "strict";
-            desc.innerHTML = `오직 <b>입력한 재료</b>와 <b>물, 소금, 후추</b>만 사용합니다.<br>(재료 본연의 맛 모드)`;
-        }
     }
+
+    function pasteKey() {
+        if (navigator.clipboard && navigator.clipboard.readText) {
+            navigator.clipboard.readText().then(text => {
+                const input = document.getElementById('apiKeyModalInput');
+                input.value = text.trim();
+                validateAndSaveKey(text.trim());
+                showToast('클립보드에서 키를 붙여넣었습니다.');
+            }).catch(err => { showToast('클립보드 접근이 거부되었습니다.'); });
+        } else { showToast('클립보드 API를 지원하지 않습니다.'); }
+        playSound('click');
+    }
+
+    // --- (나머지 로직 유지) ---
+    function addIngredient(name) { const input = document.getElementById('ingredients'); const currentVal = input.value.trim(); if (currentVal) input.value = currentVal + ', ' + name; else input.value = name; }
+    function toggleIngredient(el, name) { if (selectedIngredients.has(name)) { selectedIngredients.delete(name); el.classList.remove('pressed'); } else { selectedIngredients.add(name); el.classList.add('pressed'); } updateInput(); }
+    function updateInput() { const input = document.getElementById('ingredients'); if (selectedIngredients.size > 0) { input.value = Array.from(selectedIngredients).join(', '); } else { input.value = ''; } }
+    function clearInput() { selectedIngredients.clear(); document.getElementById('ingredients').value = ''; document.querySelectorAll('.chip, .sub-chip').forEach(el => el.classList.remove('pressed')); }
+    function toggleCategory(id) { const subMenu = document.getElementById('sub-' + id); const chip = document.getElementById('chip-' + id); const isVisible = subMenu.classList.contains('open'); document.querySelectorAll('.main-category-container').forEach(el => el.classList.remove('open')); document.querySelectorAll('.category-chip').forEach(el => el.classList.remove('active')); if (!isVisible) { subMenu.classList.add('open'); chip.classList.add('active'); } }
+    function toggleSubGroup(id) { const groupArea = document.getElementById('group-' + id); const arrow = document.getElementById('arrow-' + id); const btn = arrow.parentElement; const isVisible = groupArea.classList.contains('open'); if (isVisible) { groupArea.classList.remove('open'); btn.classList.remove('active'); } else { groupArea.classList.add('open'); btn.classList.add('active'); } }
+    function updateChefUI() { const box = document.getElementById('settingsBox'); const toggle = box.querySelector('#chefToggle'); const desc = document.getElementById('chef-desc'); if(toggle.checked) { box.dataset.chef = "conservative"; desc.innerHTML = `이 셰프는 <b>실패 없는 맛</b>을 중요시합니다.<br>누구나 좋아하는 검증된 표준 레시피를 추천합니다.`; } else { box.dataset.chef = "creative"; desc.innerHTML = `이 셰프는 <b>이 세상에 없던 요리</b>를 만들 수 있습니다.<br>독창적인 맛의 조합을 제안합니다.`; } }
+    function updateSeasoningUI() { const box = document.getElementById('settingsBox'); const toggle = box.querySelector('#seasoningToggle'); const desc = document.getElementById('season-desc'); if(toggle.checked) { box.dataset.season = "allowed"; desc.innerHTML = `<b>간장, 굴소스, 마요네즈, 치킨스톡</b> 등 다양한 양념을 사용합니다.<br>더 풍부하고 맛있는 요리가 가능합니다.`; } else { box.dataset.season = "strict"; desc.innerHTML = `오직 <b>입력한 재료</b>와 <b>물, 소금, 후추</b>만 사용합니다.<br>(재료 본연의 맛 모드)`; } }
 
     async function getRecipe() {
+        const apiKey = localStorage.getItem(API_KEY_STORAGE_KEY);
+        if (!apiKey) {
+            // 키가 없으면 alert 후 새로고침
+            alert('API Key 인증이 필요합니다.');
+            document.getElementById('apiKeyModal').style.display = 'flex';
+            return;
+        }
         const input = document.getElementById('ingredients');
         const rawInput = input.value.split(',').map(s => s.trim()).filter(s => s);
         rawInput.forEach(s => selectedIngredients.add(s));
-
         if(!input.value.trim()) { showToast('재료를 입력해주세요!'); return; }
-
         const btn = document.getElementById('cookBtn');
         const loading = document.getElementById('loading');
         const resultArea = document.getElementById('result-area');
         const cardsContainer = document.getElementById('cards-container');
-
         btn.disabled = true; btn.innerText = "요리 중...";
         loading.style.display = 'block'; resultArea.style.display = 'none';
         cardsContainer.innerHTML = '';
-
         try {
-            const response = await fetch('/generate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    ingredients: input.value,
-                    is_creative_mode: state.isCreative,
-                    allow_seasoning: state.isAllowed
-                })
-            });
+            const response = await fetch('/generate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ api_key: apiKey, ingredients: input.value, is_creative_mode: state.isCreative, allow_seasoning: state.isAllowed }) });
+            
+            if (response.status === 401) { 
+                alert('API Key 세션이 만료되었거나 유효하지 않습니다.\n다시 로그인해주세요.'); 
+                localStorage.removeItem(API_KEY_STORAGE_KEY); 
+                location.reload(); 
+                return; 
+            }
+
             const data = await response.json();
 
             if(data.error) { alert(data.error); }
@@ -683,107 +766,19 @@
                 resultArea.style.display = 'block';
                 showToast("요리가 완성되었습니다!");
             }
-        } catch(e) { console.error(e); showToast("오류가 발생했습니다."); }
+        } catch(e) { console.error(e); showToast("서버 통신 오류가 발생했습니다."); }
         finally { btn.disabled = false; btn.innerText = "요리하기"; loading.style.display = 'none'; }
     }
 
-    function copyRecipeData(btn) {
-        if (event) event.stopPropagation();
-        playSound('click');
-        const dishName = btn.dataset.name;
-        let steps = [];
-        try { steps = JSON.parse(btn.dataset.steps); } catch(e) { return; }
-        const text = `[AI 셰프의 추천 레시피: ${dishName}]\n\n${steps.map((step, i) => `${i+1}. ${step}`).join('\n')}`;
-
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(text).then(() => showToast("레시피가 복사되었습니다!")).catch(() => fallbackCopyTextToClipboard(text));
-        } else { fallbackCopyTextToClipboard(text); }
-    }
-
-    function fallbackCopyTextToClipboard(text) {
-        const textArea = document.createElement("textarea");
-        textArea.value = text;
-        textArea.style.position = "fixed";
-        document.body.appendChild(textArea);
-        textArea.focus(); textArea.select();
-        try {
-            document.execCommand('copy'); showToast("레시피가 복사되었습니다!");
-        } catch (err) { showToast("복사 실패"); }
-        document.body.removeChild(textArea);
-    }
-
+    function copyRecipeData(btn) { if (event) event.stopPropagation(); playSound('click'); const dishName = btn.dataset.name; let steps = []; try { steps = JSON.parse(btn.dataset.steps); } catch(e) { return; } const text = `[AI 셰프의 추천 레시피: ${dishName}]\n\n${steps.map((step, i) => `${i+1}. ${step}`).join('\n')}`; if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(() => showToast("레시피가 복사되었습니다!")).catch(() => fallbackCopyTextToClipboard(text)); } else { fallbackCopyTextToClipboard(text); } }
+    function fallbackCopyTextToClipboard(text) { const textArea = document.createElement("textarea"); textArea.value = text; textArea.style.position = "fixed"; document.body.appendChild(textArea); textArea.focus(); textArea.select(); try { document.execCommand('copy'); showToast("레시피가 복사되었습니다!"); } catch (err) { showToast("복사 실패"); } document.body.removeChild(textArea); }
     let targetLink = "";
     function openLinkModal(url) { targetLink = url; document.getElementById('linkModal').style.display = 'flex'; playSound('click'); }
     function closeLinkModal() { document.getElementById('linkModal').style.display = 'none'; targetLink = ""; }
     function confirmLinkMove() { if(targetLink) window.open(targetLink, '_blank'); closeLinkModal(); }
-
-    function createCard(dish, idx) {
-        const container = document.getElementById('cards-container');
-        const card = document.createElement('div');
-        card.className = 'recipe-card';
-        card.onclick = function(e) {
-            if(['BUTTON','INPUT'].includes(e.target.tagName) || e.target.closest('.img-source-btn') || e.target.closest('.copy-btn-inline')) return;
-            playSound('click');
-            document.querySelectorAll('.recipe-card').forEach(c => c.classList.remove('active'));
-            this.classList.add('active');
-        };
-
-        const query = dish.dish_name_en || dish.dish_name;
-        const encodedQuery = encodeURIComponent(query + ' dish food'); 
-        const imgUrl = `https://tse4.mm.bing.net/th?q=${encodedQuery}&w=800&h=600&c=7&rs=1`;
-        const searchUrl = `https://www.bing.com/images/search?q=${encodedQuery}&qft=+filterui:license-L2_L3_L4`;
-
-        const stepsHtml = dish.recipe_steps.map(s => `<li>${s}</li>`).join('');
-        const qInputId = `q-${idx}`; const qAnsId = `a-${idx}`;
-        const stepsJson = JSON.stringify(dish.recipe_steps).replace(/"/g, '&quot;');
-
-        card.innerHTML = `
-            <div class="image-container">
-                <img src="${imgUrl}" class="dish-image" onerror="this.src='https://via.placeholder.com/800x600?text=No+Image';">
-                <button class="img-source-btn" onclick="event.stopPropagation(); openLinkModal('${searchUrl}')">🔍 검색 이미지 출처</button>
-            </div>
-            <div class="card-content">
-                <div class="card-header">
-                    <span class="dish-name">${dish.dish_name}</span>
-                    <span class="dish-style">${dish.style}</span>
-                </div>
-                <div class="card-info">
-                    <span class="level-badge">⚡ ${dish.difficulty}</span>
-                    <span class="level-badge">🔥 ${dish.calories}kcal</span>
-                </div>
-                <div class="card-detail">
-                    <div class="reasoning">${dish.reasoning}</div>
-                    <div class="section-header">
-                        <h4>📝 조리 순서</h4>
-                        <button class="copy-btn-inline" data-name="${dish.dish_name}" data-steps="${stepsJson}" onclick="copyRecipeData(this)">📋 복사</button>
-                    </div>
-                    <ul class="steps">${stepsHtml}</ul>
-                    <div class="qa-section">
-                        <div style="font-weight:700; color:var(--secondary-color); margin-bottom:8px;">👨‍🍳 셰프에게 질문하기</div>
-                        <div class="qa-input-box">
-                            <input type="text" id="${qInputId}" class="qa-input" placeholder="예: 불 조절은 어떻게 하나요?">
-                            <button class="qa-btn" onclick="askChef('${dish.dish_name}', '${qInputId}', '${qAnsId}')">질문</button>
-                        </div>
-                        <div id="${qAnsId}" class="qa-answer"></div>
-                    </div>
-                </div>
-            </div>
-        `;
-        container.appendChild(card);
-    }
-
-    async function askChef(dish, inId, ansId) {
-        const input = document.getElementById(inId);
-        const ansBox = document.getElementById(ansId);
-        if(!input.value.trim()) return;
-        playSound('click');
-        ansBox.style.display = 'block'; ansBox.innerText = "답변 생성 중..."; ansBox.classList.add('show');
-        try {
-            const res = await fetch('/ask', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({dish_name: dish, question: input.value})});
-            const data = await res.json();
-            ansBox.innerText = "🗣️ " + data.answer;
-        } catch(e) { ansBox.innerText = "오류가 발생했습니다."; }
-    }
+    function createCard(dish, idx) { const container = document.getElementById('cards-container'); const card = document.createElement('div'); card.className = 'recipe-card'; card.onclick = function(e) { if(['BUTTON','INPUT'].includes(e.target.tagName) || e.target.closest('.img-source-btn') || e.target.closest('.copy-btn-inline')) return; playSound('click'); document.querySelectorAll('.recipe-card').forEach(c => c.classList.remove('active')); this.classList.add('active'); }; const query = dish.dish_name_en || dish.dish_name; const encodedQuery = encodeURIComponent(query + ' dish food'); const imgUrl = `https://tse4.mm.bing.net/th?q=${encodedQuery}&w=800&h=600&c=7&rs=1`; const searchUrl = `https://www.bing.com/images/search?q=${encodedQuery}&qft=+filterui:license-L2_L3_L4`; const stepsHtml = dish.recipe_steps.map(s => `<li>${s}</li>`).join(''); const qInputId = `q-${idx}`; const qAnsId = `a-${idx}`; const stepsJson = JSON.stringify(dish.recipe_steps).replace(/"/g, '&quot;'); const calInfo = getCalorieInfo(dish.calories); const diffInfo = getDiffInfo(dish.difficulty); card.innerHTML = `<div class="image-container"><img src="${imgUrl}" class="dish-image" onerror="this.src='https://via.placeholder.com/800x600?text=No+Image';"><button class="img-source-btn" onclick="event.stopPropagation(); openLinkModal('${searchUrl}')">🔍 검색 이미지 출처</button></div><div class="card-content"><div class="card-header"><span class="dish-name">${dish.dish_name}</span><span class="dish-style">${dish.style}</span></div><div class="card-info"><span class="level-badge diff-badge" onclick="showLevelInfo('diff', ${diffInfo.level})">⚡ ${diffInfo.text}</span><span class="level-badge cal-badge" onclick="showLevelInfo('cal', ${calInfo.level})">🔥 ${calInfo.text}</span></div><div class="card-detail"><div class="reasoning">${dish.reasoning}</div><div class="section-header"><h4>📝 조리 순서</h4><button class="copy-btn-inline" data-name="${dish.dish_name}" data-steps="${stepsJson}" onclick="copyRecipeData(this)">📋 복사</button></div><ul class="steps">${stepsHtml}</ul><div class="qa-section"><div style="font-weight:700; color:var(--secondary-color); margin-bottom:8px;">👨‍🍳 셰프에게 질문하기</div><div class="qa-input-box"><input type="text" id="${qInputId}" class="qa-input" placeholder="예: 불 조절은 어떻게 하나요?"><button class="qa-btn" onclick="askChef('${dish.dish_name}', '${qInputId}', '${qAnsId}')">질문</button></div><div id="${qAnsId}" class="qa-answer"></div></div></div></div>`; container.appendChild(card); }
+    async function askChef(dish, inId, ansId) { const apiKey = localStorage.getItem(API_KEY_STORAGE_KEY); if (!apiKey) { alert('API Key 인증이 필요합니다.'); location.reload(); return; } const input = document.getElementById(inId); const ansBox = document.getElementById(ansId); if(!input.value.trim()) return; playSound('click'); ansBox.style.display = 'block'; ansBox.innerText = "답변 생성 중..."; ansBox.classList.add('show'); try { const res = await fetch('/ask', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({api_key: apiKey, dish_name: dish, question: input.value})}); const data = await res.json(); if(res.status===401){ alert('API Key 오류'); location.reload(); return; } ansBox.innerText = "🗣️ " + data.answer; } catch(e) { ansBox.innerText = "오류가 발생했습니다."; } }
+    const CALORIE_LEVELS = [ { level: 1, text: "🌿 숨만 쉬어도 살 안 찜 (300kcal 미만)" }, { level: 2, text: "🥗 가벼운 한 끼 (300~600kcal)" }, { level: 3, text: "🍚 든든한 집밥 (600~900kcal)" }, { level: 4, text: "🍖 맛있으면 0칼로리 (900~1400kcal)" }, { level: 5, text: "🚨 뱃살 경보 발령 (1400kcal 이상)" } ]; const DIFF_LEVELS = [ { level: 1, text: "👶 라면보다 쉬움 (하)" }, { level: 2, text: "🔪 칼질만 조심해 (중하)" }, { level: 3, text: "🏠 나도 이제 요리사 (중)" }, { level: 4, text: "🔥 불조절이 관건 (중상)" }, { level: 5, text: "👨‍🍳 셰프의 도전 (상)" } ]; function getCalorieInfo(kcalStr) { const matches = String(kcalStr).match(/\d+/g); let kcal = 0; if (matches && matches.length > 0) { if (matches.length === 1) { kcal = parseInt(matches[0]); } else { let sum = 0; matches.forEach(n => sum += parseInt(n)); kcal = sum / matches.length; } } let lvl = 3; if (kcal === 0) lvl = 3; else if (kcal < 300) lvl = 1; else if (kcal < 600) lvl = 2; else if (kcal < 900) lvl = 3; else if (kcal < 1400) lvl = 4; else lvl = 5; return CALORIE_LEVELS[lvl-1]; } function getDiffInfo(diffStr) { const s = String(diffStr).trim(); if (s.includes("최상") || s.includes("극상")) return DIFF_LEVELS[4]; if (s.includes("중상")) return DIFF_LEVELS[3]; if (s.includes("중하")) return DIFF_LEVELS[1]; if (s.includes("상")) return DIFF_LEVELS[4]; if (s.includes("중")) return DIFF_LEVELS[2]; if (s.includes("하")) return DIFF_LEVELS[0]; return DIFF_LEVELS[2]; } function showLevelInfo(type, currentLevel) { const modal = document.getElementById('infoModal'); const title = document.getElementById('modalTitle'); const list = document.getElementById('modalList'); let data = []; if (type === 'cal') { title.innerText = "📊 칼로리 5단계 가이드"; data = CALORIE_LEVELS; } else { title.innerText = "🔥 난이도 5단계 가이드"; data = DIFF_LEVELS; } list.innerHTML = ''; data.forEach(item => { const li = document.createElement('li'); li.className = 'level-item'; if (item.level === currentLevel) li.classList.add('active'); li.innerHTML = `<span class="level-num">Lv.${item.level}</span> ${item.text}`; list.appendChild(li); }); modal.style.display = 'flex'; }
 </script>
 </body>
 </html>
